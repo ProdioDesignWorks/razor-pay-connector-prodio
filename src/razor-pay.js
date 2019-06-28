@@ -27,7 +27,7 @@ let masterCredentials = {};
 export default class razorPay {
 
 
-  createOrder = () => {
+  createOrder = (payloadJson) => {
     razorPay.orders.create({ amount, currency, receipt, payment_capture, notes })
   }
 
