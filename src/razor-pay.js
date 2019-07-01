@@ -2,7 +2,7 @@ const uuidv4 = require('uuid/v4');
 const axios = require('axios');
 const payumoney = require('payumoney-node');
 const razorPayModule = require('razorpay');
-let razorPay = new razorPayModule({
+let razorPayObj = new razorPayModule({
   key_id: "", // your `KEY_ID`
   key_secret: "" // your `KEY_SECRET`
 })
@@ -22,8 +22,7 @@ let masterCredentials = {};
 
 export default class razorPay {
 
-
-  createOrder = (payloadJson) => {
+  createOrder (payloadJson){
     return new Promise((resolve, reject) => {
       const {
         amount,
@@ -32,7 +31,7 @@ export default class razorPay {
         payment_capture,
         notes
       } = payloadJson;
-      razorPay.orders.create({ amount, currency, receipt, payment_capture, notes }).then(response => {
+      razorPayObj.orders.create({ amount, currency, receipt, payment_capture, notes }).then(response => {
         return resolve(response);
         console.log(response);
       }).catch(error => {
@@ -42,9 +41,9 @@ export default class razorPay {
     })
   }
 
-  fetchSingleOrder = (orderId) => {
+  fetchSingleOrder (orderId){
     return new Promise((resolve, reject) => {
-      razorPay.orders.fetch(orderId).then(response => {
+      razorPayObj.orders.fetch(orderId).then(response => {
         return resolve(response);
       }).catch(error => {
         return reject(error);
