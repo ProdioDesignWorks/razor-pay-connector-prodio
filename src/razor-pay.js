@@ -2,12 +2,6 @@ const uuidv4 = require('uuid/v4');
 const axios = require('axios');
 const payumoney = require('payumoney-node');
 const razorPayModule = require('razorpay');
-let razorPayObj = new razorPayModule({
-  key_id: "", // your `KEY_ID`
-  key_secret: "" // your `KEY_SECRET`
-})
-console.log(rzp);
-
 
 const isNull = function (val) {
   if (typeof val === 'string') { val = val.trim(); }
@@ -19,10 +13,17 @@ const isNull = function (val) {
 
 
 let masterCredentials = {};
-
+let razorPayObj = {};
 export default class razorPay {
+  constructor(config) {
+    this.config = config;
+    razorPayObj = new razorPayModule({
+      key_id: this.config.KEY_ID,
+      key_secret: this.config.KEY_SECRET
+    });
+  }
 
-  createOrder (payloadJson){
+  createOrder(payloadJson) {
     return new Promise((resolve, reject) => {
       const {
         amount,
@@ -41,7 +42,8 @@ export default class razorPay {
     })
   }
 
-  fetchSingleOrder (orderId){
+  fetchSingleOrder(payload) {
+     const { orderId } = payload;
     return new Promise((resolve, reject) => {
       razorPayObj.orders.fetch(orderId).then(response => {
         return resolve(response);
@@ -49,8 +51,5 @@ export default class razorPay {
         return reject(error);
       })
     })
-  } 
-
-
-
+  }
 }
