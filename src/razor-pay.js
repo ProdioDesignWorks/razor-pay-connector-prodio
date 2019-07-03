@@ -1,6 +1,5 @@
 const uuidv4 = require('uuid/v4');
 const axios = require('axios');
-const payumoney = require('payumoney-node');
 const razorPayModule = require('razorpay');
 
 const isNull = function (val) {
