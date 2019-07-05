@@ -10,8 +10,6 @@ const isNull = function (val) {
   return false;
 };
 
-
-let masterCredentials = {};
 let razorPayObj = {};
 export default class razorPay {
   constructor(config) {
@@ -49,6 +47,18 @@ export default class razorPay {
       }).catch(error => {
         return reject(error);
       })
+    })
+  };
+
+  capturePayment(payload){
+    const {paymentId,amount} = payload;
+    return new Promise((resolve,reject)=>{
+      razorPayObj.payments.capture(paymentId, amount).then((data) => {
+        return resolve(response);
+      }).catch((error) => {
+        console.log("error",error);
+        return reject(error);
+      });
     })
   }
 }

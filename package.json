@@ -4,7 +4,7 @@
   "description": "Adapter for consuming razor-pay API's",
   "main": "lib/index.js",
   "scripts": {
-    "build": ". scripts/build.sh",
+    "build": ". Scripts/build.sh",
     "lint": "eslint --ext .js .",
     "lintfix": "eslint --fix --ext .js .",
     "prepublishOnly": "npm run build"
@@ -42,6 +42,7 @@
   "license": "ISC",
   "dependencies": {
     "axios": "^0.18.0",
+    "babel-install": "^2.1.0",
     "payumoney-node": "^2.0.1",
     "razorpay": "^2.0.4",
     "user": "0.0.0",
