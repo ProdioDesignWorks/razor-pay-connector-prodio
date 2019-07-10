@@ -39,6 +39,8 @@ export default class razorPay {
     })
   }
 
+  
+
   createPlan(payloadJson){
     return new Promise((resolve,reject)=>{
       const {
