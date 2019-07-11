@@ -98,6 +98,7 @@ export default class razorPay {
   webhookProcessor(payload){
     return new Promise((resolve,reject)=>{
       if(payload){
+        console.log("payload",payload);
         return resolve(payload);
       }
       else {
