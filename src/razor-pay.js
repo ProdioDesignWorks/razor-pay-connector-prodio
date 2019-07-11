@@ -38,9 +38,6 @@ export default class razorPay {
       })
     })
   }
-
-  
-
   createPlan(payloadJson){
     return new Promise((resolve,reject)=>{
       const {
@@ -96,6 +93,17 @@ export default class razorPay {
         console.log("error",error);
         return reject(error);
       });
+    })
+  }
+  webhookProcessor(payload){
+    return new Promise((resolve,reject)=>{
+      if(payload){
+        return resolve(payload);
+      }
+      else {
+        const error="Error while receiving data from  webhook.";
+        return reject(error);
+      }
     })
   }
 }
