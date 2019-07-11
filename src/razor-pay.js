@@ -38,7 +38,41 @@ export default class razorPay {
       })
     })
   }
-
+  createPlan(payloadJson){
+    return new Promise((resolve,reject)=>{
+      const {
+        period,
+        interval,
+        item,
+        notes
+      } = payloadJson;
+      razorPayObj.plans.create({period,interval,item,notes}).then(response=>{
+        console.log("response",response);
+        return resolve(response);
+      }).catch(error=>{
+        return reject(error);
+      })
+    })
+  }
+  
+  subscribePlan(payloadJson){
+    return new Promise((resolve,reject)=>{
+      const {
+        plan_id,
+        total_count,
+        start_at,
+        addons,
+        notes,
+        customer_notify,
+        expire_by
+      } = payloadJson;
+      razorPayObj.subscriptions.create({plan_id,total_count,start_at,addons,notes,customer_notify,expire_by}).then(response=>{
+          return resolve(response);
+      }).catch(error=>{
+          return reject(error);
+      })
+    })
+  }
   fetchSingleOrder(payload) {
      const { orderId } = payload;
     return new Promise((resolve, reject) => {
@@ -59,6 +93,18 @@ export default class razorPay {
         console.log("error",error);
         return reject(error);
       });
+    })
+  }
+  webhookProcessor(payload){
+    return new Promise((resolve,reject)=>{
+      if(payload){
+        console.log("payload",payload);
+        return resolve(payload);
+      }
+      else {
+        const error="Error while receiving data from  webhook.";
+        return reject(error);
+      }
     })
   }
 }

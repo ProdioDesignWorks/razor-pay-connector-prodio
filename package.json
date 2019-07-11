@@ -1,6 +1,6 @@
 {
   "name": "razor-pay-connector-prodio",
-  "version": "0.0.1",
+  "version": "0.0.3",
   "description": "Adapter for consuming razor-pay API's",
   "main": "lib/index.js",
   "scripts": {
