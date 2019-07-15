@@ -30,8 +30,9 @@ export default class razorPay {
         notes
       } = payloadJson;
       razorPayObj.orders.create({ amount, currency, receipt, payment_capture, notes }).then(response => {
+        console.log("response..............................",response);
         return resolve(response);
-        console.log(response);
+      
       }).catch(error => {
         console.log(error);
         return reject(error);
@@ -95,10 +96,17 @@ export default class razorPay {
       });
     })
   }
-  webhookProcessor(payload){
+  webhookProcessor(webhookPayload){
     return new Promise((resolve,reject)=>{
-      if(payload){
+      if(webhookPayload){        
         console.log("payload",payload);
+        const {entity} = webhookPayload.payload.payment;
+        const payload = {
+          "event":webhookPayload.event,
+          "order_id":entity.order_id,
+          "payment_id":entity.id,
+          "amount":entity.amount,
+        };
         return resolve(payload);
       }
       else {
