@@ -19,7 +19,65 @@ export default class razorPay {
       key_secret: this.config.KEY_SECRET
     });
   }
+  createMerchant(payloadJson) {
+    return new Promise((resolve, reject) => {
 
+        resolve({
+            "success": true,
+            "body": {
+                "merchant": {
+                    "mid": uuidv4()
+                }
+            }
+        });
+
+    });
+  }
+  updateMerchant(payloadJson) {
+    return 'This is from Integrity';
+  }
+  deleteMerchant(payloadJson) {
+    return 'This is from Integrity';
+  }
+  getMerchantId(payloadJson) {
+    return 'this is tes';
+  }
+  getMerchantProfile(payloadJson) {
+    return 'this is test';
+  }
+  getMerchantActionvationStatus(payloadJson) {
+    return new Promise((resolve, reject) => {
+
+        resolve({
+            "success": true,
+            "body": {
+                "activationStatus": true
+            }
+        });
+
+    });
+  }
+  createPayer(payloadJson) {
+    return new Promise((resolve, reject) => {
+        resolve({
+            "success": true,
+            "body": {
+                "gatewayBuyerId": uuidv4()
+            }
+        });
+    });
+  }
+  editPayer(payloadJson) {
+
+    return new Promise((resolve, reject) => {
+        resolve({
+            "success": true,
+            "body": {
+                "gatewayBuyerId": payloadJson["payeeInfo"]["gatewayBuyerId"]
+            }
+        });
+    });
+  }
   createOrder(payloadJson) {
     return new Promise((resolve, reject) => {
       const {
@@ -55,7 +113,6 @@ export default class razorPay {
       })
     })
   }
-  
   subscribePlan(payloadJson){
     return new Promise((resolve,reject)=>{
       const {
@@ -84,7 +141,6 @@ export default class razorPay {
       })
     })
   };
-
   capturePayment(payload){
     const {paymentId,amount} = payload;
     return new Promise((resolve,reject)=>{
@@ -99,15 +155,57 @@ export default class razorPay {
   webhookProcessor(webhookPayload){
     return new Promise((resolve,reject)=>{
       if(webhookPayload){        
-        console.log("payload",payload);
         const {entity} = webhookPayload.payload.payment;
-        const payload = {
-          "event":webhookPayload.event,
-          "order_id":entity.order_id,
-          "payment_id":entity.id,
-          "amount":entity.amount,
-        };
-        return resolve(payload);
+        const subscriptionEntity = webhookPayload.payload.subscription ? webhookPayload.payload.subscription.entity : {};
+        const {event} = webhookPayload;
+        console.log("event",event);
+        let payload = {};
+      switch (event) {
+          case 'payment.captured':
+            payload = {
+              "event":webhookPayload.event,
+              "order_id":entity.order_id,
+              "payment_id":entity.id,
+              "amount":entity.amount,
+              "customer_id":entity.customer_id
+            };
+            return resolve(payload);
+            break;
+          case 'subscription.activated':{
+            if(subscriptionEntity){
+              payload = {
+                "event":webhookPayload.event,
+                "order_id":entity.order_id,
+                "amount":entity.amount,
+                "payment_id":entity.id,
+                "subscription_id":subscriptionEntity.id,
+                "status":subscriptionEntity.status,
+                "total_count":subscriptionEntity.total_count,
+                "charge_at":subscriptionEntity.charge_at,
+                "remaining_count":subscriptionEntity.remaining_count,
+                "cardDetails":entity.card
+              };
+              return resolve(payload);
+            }
+          }
+          case 'subscription.charged':{
+            if(subscriptionEntity){
+              payload = {
+                "event":webhookPayload.event,
+                "order_id":entity.order_id,
+                "amount":entity.amount,
+                "payment_id":entity.id,
+                "subscription_id":subscriptionEntity.id,
+                "status":subscriptionEntity.status,
+                "total_count":subscriptionEntity.total_count,
+                "charge_at":subscriptionEntity.charge_at,
+                "remaining_count":subscriptionEntity.remaining_count
+              };
+              return resolve(payload);
+            }
+          }
+      }
+
       }
       else {
         const error="Error while receiving data from  webhook.";
@@ -115,4 +213,86 @@ export default class razorPay {
       }
     })
   }
+  fetchSubscriptionProfile(payload){
+    const {subscriptionId} = payload;
+    razorPayObj.subscriptions.fetch(subscriptionId).then(response => {
+      return resolve(response);
+    }).catch(error => {
+      return reject(error);
+    })
+  }
+  cancelSubscription(payload){
+    const {subscriptionId,cancelAtCycleEnd} = payload;
+    razorPayObj.subscriptions.cancel(subscriptionId,cancelAtCycleEnd).then(response => {
+      return resolve(response);
+    }).catch(error => {
+      return reject(error);
+    })
+  }
+  createTransfer(payloadJson){
+    return new Promise((resolve,reject)=>{
+      const {
+        payment_id,
+        transfer_payload
+      } = payloadJson;
+      razorPayObj.payments.transfer.create(payment_id,transfer_payload).then(response=>{
+          return resolve(response);
+      }).catch(error=>{
+          return reject(error);
+      })
+    });
+  }
+
+  getPaymentProfile(payloadJson){
+    const {payment_id} = payloadJson;
+    return new Promise((resolve,reject)=>{
+      razorPayObj.payments.fetch(payment_id).then(response=>{
+          return resolve(response);
+      }).catch(error=>{
+          return reject(error);
+      })
+    });
+  }
+  getAllPayments(payloadJson){
+    const {from,to,count,skip} = payloadJson;
+    return new Promise((resolve,reject)=>{
+      razorPayObj.payments.all({from,to,count,skip}).then((response) => {
+        return resolve(response);
+      }).catch((error) => {
+        console.log("error",error);
+        return reject(error);
+      });
+    })
+  }
+  makeRefund(payloadJson){
+    const {payment_id,amount,notes} = payloadJson;
+    return new Promise((resolve,reject)=>{
+      razorPayObj.payments.all(payment_id,{amount,notes}).then((response) => {
+        return resolve(response);
+      }).catch((error) => {
+        console.log("error",error);
+        return reject(error);
+      });
+    })
+  }
+  
+  removePayer(payloadJson) {
+    return new Promise((resolve, reject) => {
+        resolve({
+            "success": true,
+            "body": {
+                "gatewayBuyerId": payloadJson["payeeInfo"]["gatewayBuyerId"]
+            }
+        });
+    });
+}
+  bulkUploadPayers(payloadJson) {
+    return 'this is test';
+}
+getPayersListing(payloadJson) {
+  return 'this is test';
+}
+getPayersTransactions(payloadJson) {
+  return 'this is test';
+}
 }
