@@ -166,7 +166,10 @@ export default class razorPay {
               "event":webhookPayload.event,
               "order_id":entity.order_id,
               "payment_id":entity.id,
+              "currency":entity.currency,
               "amount":entity.amount,
+              "capture":entity.capture,
+              "status":entity.status,
               "customer_id":entity.customer_id
             };
             return resolve(payload);
@@ -203,6 +206,18 @@ export default class razorPay {
               };
               return resolve(payload);
             }
+          }
+          case 'invoice.paid':{
+              payload = {
+                "event":webhookPayload.event,
+                "order_id":entity.order_id,
+                "payment_id":entity.id,
+                "amount":entity.amount,
+                "capture":entity.capture,
+                "status":entity.status,
+                "customer_id":entity.customer_id
+              };
+              return resolve(payload);
           }
       }
 
@@ -286,7 +301,24 @@ export default class razorPay {
         });
     });
 }
-  bulkUploadPayers(payloadJson) {
+  createInvoice(payloadJson){
+  return new Promise((resolve,reject)=>{
+    const {
+      type,
+      currency,
+      amount,
+      customer,
+      description
+    } = payloadJson;
+    razorPayObj.invoices.create({type,currency,amount,customer,description}).then((response) => {
+      return resolve(response);
+    }).catch((error) => {
+      console.log("error",error);
+      return reject(error);
+    });
+  })
+}
+bulkUploadPayers(payloadJson) {
     return 'this is test';
 }
 getPayersListing(payloadJson) {
