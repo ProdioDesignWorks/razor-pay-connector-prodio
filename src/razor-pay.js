@@ -166,9 +166,9 @@ export default class razorPay {
               "event":webhookPayload.event,
               "order_id":entity.order_id,
               "payment_id":entity.id,
-              "currency":entity.currency,
+              "currency":entity.currency, 
               "amount":entity.amount,
-              "capture":entity.capture,
+              "capture":entity.captured,
               "status":entity.status,
               "customer_id":entity.customer_id
             };
@@ -213,7 +213,7 @@ export default class razorPay {
                 "order_id":entity.order_id,
                 "payment_id":entity.id,
                 "amount":entity.amount,
-                "capture":entity.capture,
+                "capture":entity.captured,
                 "status":entity.status,
                 "customer_id":entity.customer_id
               };
@@ -250,7 +250,8 @@ export default class razorPay {
         payment_id,
         transfer_payload
       } = payloadJson;
-      razorPayObj.payments.transfer.create(payment_id,transfer_payload).then(response=>{
+      console.log("create transfer payload",payloadJson);
+      razorPayObj.payments.transfer(payment_id,transfer_payload).then(response=>{
           return resolve(response);
       }).catch(error=>{
           return reject(error);
