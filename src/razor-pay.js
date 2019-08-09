@@ -166,14 +166,40 @@ export default class razorPay {
               "event":webhookPayload.event,
               "order_id":entity.order_id,
               "payment_id":entity.id,
+              "invoice_id":entity.invoice_id,
               "currency":entity.currency, 
               "amount":entity.amount,
               "capture":entity.captured,
               "status":entity.status,
-              "customer_id":entity.customer_id
+              "cardDetails":entity.card,
+              "customer_id":entity.customer_id,
+              "email":entity.email,
+              "contact":entity.contact,
+              "created_at":entity.created_at
             };
             return resolve(payload);
             break;
+            case 'payment.failed':
+              payload = {
+                "event":webhookPayload.event,
+                "order_id":entity.order_id,
+                "payment_id":entity.id,
+ 		"invoice_id":entity.invoice_id,
+                "currency":entity.currency, 
+                "amount":entity.amount,
+                "capture":entity.captured,
+                "status":entity.status,
+                "cardDetails":entity.card,
+                "error_code":entity.error_code,
+                "error_description":entity.error_description,
+                "created_at":entity.created_at,
+                "email":entity.email,
+                "contact":entity.contact,
+                "customer_id":entity.customer_id
+              };
+              return resolve(payload);
+              break;
+
           case 'subscription.activated':{
             if(subscriptionEntity){
               payload = {
@@ -185,6 +211,7 @@ export default class razorPay {
                 "status":subscriptionEntity.status,
                 "total_count":subscriptionEntity.total_count,
                 "charge_at":subscriptionEntity.charge_at,
+                "created_at":subscriptionEntity.created_at,
                 "remaining_count":subscriptionEntity.remaining_count,
                 "cardDetails":entity.card
               };
@@ -198,10 +225,14 @@ export default class razorPay {
                 "order_id":entity.order_id,
                 "amount":entity.amount,
                 "payment_id":entity.id,
+		"invoice_id":entity.invoice_id,
                 "subscription_id":subscriptionEntity.id,
                 "status":subscriptionEntity.status,
                 "total_count":subscriptionEntity.total_count,
                 "charge_at":subscriptionEntity.charge_at,
+                "email":subscriptionEntity.email,
+                "contact":subscriptionEntity.contact,
+                "created_at":subscriptionEntity.created_at,
                 "remaining_count":subscriptionEntity.remaining_count
               };
               return resolve(payload);
@@ -212,10 +243,15 @@ export default class razorPay {
                 "event":webhookPayload.event,
                 "order_id":entity.order_id,
                 "payment_id":entity.id,
+		"invoice_id":entity.invoice_id,
                 "amount":entity.amount,
                 "capture":entity.captured,
                 "status":entity.status,
-                "customer_id":entity.customer_id
+                "customer_id":entity.customer_id,
+                "email":entity.email,
+                "cardDetails":entity.card,
+                "contact":entity.contact,
+                "created_at":entity.created_at
               };
               return resolve(payload);
           }
