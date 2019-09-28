@@ -219,6 +219,9 @@ export default class razorPay {
               };
               return resolve(payload);
           }
+          default:
+              console.log('================>entered in default=================>');
+              return resolve({});
       }
 
       }
