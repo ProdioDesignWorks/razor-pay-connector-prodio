@@ -253,9 +253,12 @@ export default class razorPay {
         payment_id,
         transfer_payload
       } = payloadJson;
-      razorPayObj.payments.transfer.create(payment_id,transfer_payload).then(response=>{
+      console.log("transfer payload",JSON.stringify(payloadJson));
+      razorPayObj.payments.transfer(payment_id,transfer_payload).then(response=>{
+            console.log('response',response);
           return resolve(response);
       }).catch(error=>{
+        console.log('error',error);
           return reject(error);
       })
     });
